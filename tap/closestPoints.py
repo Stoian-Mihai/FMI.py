@@ -20,8 +20,9 @@ def distance(a, b):
     return math.sqrt((a[0]-b[0])*(a[0]-b[0]) + (a[1]-b[1])*(a[1]-b[1]))
 
 def bruteForce(points):
+
     if len(points) < 2:
-        return -1
+        return -1, (0,0)
     minDist = distance(points[0],points[1])
     minPoints = (points[0],points[1])
     for point1 in points:
@@ -30,25 +31,31 @@ def bruteForce(points):
             if minDist > distance(point1,point2) and point1 != point2:
                 minDist = distance(point1,point2)
                 minPoints = (point1,point2)
-    return minDist
+    return minDist, minPoints
     #print(minPoints)
 
 def stripClose(points, line, mindist):
     minstrip = mindist
+    minPoints = ()
     for i in range(len(points)):
         if points[i][0] > line-mindist:
             #print(points[i])
             for j in range(i, len(points)):
                 #print(points[j])
                 if points[j][0] > line and points[j][1] > points[i][1] and points[j][0] < line+mindist:
-                    minstrip = min(minstrip, distance(points[i], points[j]))
+                    if distance(points[i], points[j]) < minstrip:
+                        minstrip = distance(points[i], points[j])
+                        minPoints = (points[i], points[j])
+
+
         if points[i][0] > line+mindist:
             break
-    return minstrip
+    return minstrip, minPoints
 
 def divimp(v):
     if len(v) <= 3:
-        return bruteForce(v)
+        minDist, minPoints = bruteForce(v)
+        return minDist, minPoints
     left = v[0][0]
     right = v[len(v) - 1][0]
 
@@ -59,16 +66,24 @@ def divimp(v):
         if v[ind][0] >= middle:
             break
 
-    lowRight = divimp(v[ind:])
-    lowLeft = divimp(v[:ind])
+    lowRight, minPointsRight = divimp(v[ind:])
+    lowLeft, minPointsLeft = divimp(v[:ind])
+
     lowDist = min(lowRight, lowLeft)
     if lowRight == -1:
         lowDist = lowLeft
     elif lowLeft == -1:
         lowDist = lowRight
-    stripDist = stripClose(points, middle, lowDist)
+    stripDist, stripPoints = stripClose(points, middle, lowDist)
     lowDist = min(lowDist, stripDist)
-    return lowDist
+    minPoints = (0,0)
+    if lowDist == lowRight:
+        minPoints = minPointsRight
+    elif lowDist == lowLeft:
+        minPoints = minPointsLeft
+    elif lowDist == stripDist:
+        minPoints = stripPoints
+    return lowDist, minPoints
 
 points.append((46, 3))
 points.append((52, 10))
