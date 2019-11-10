@@ -1,19 +1,28 @@
-def z(i,j,n):
-    nr = 0
-    if n == 0:
-        return 1
-    else:
-        if i > n:
-            nr = nr + 2 * n * n
-            i = i-n
-        if j > n:
-            nr = nr + n * n
-            j  = j-n
-        return nr + z(i, j, int(n/2))
 
+t_dim_2 = [[1, 2], [3, 4]]
+
+def z(i, j, dim):
+    t = dim ** 2
+    if dim == 2:
+        return t_dim_2[i-1][j-1]
+
+    d = dim//2
+    if i <= d: # I or II
+        if j <= d:
+            return z(i, j, d) #I
+        else:
+            j -= d
+            return t//4 + z(i, j, d) # II
+    else: # III or IV
+        if j <=d:
+            i -= d
+            return t//2 + z(i, j, d) # III
+        else:
+            i -= d
+            j -= d
+            return 3*t//4 + z(i, j, d) # IV
 n = 2
 i = 3
 j = 3
-dim = (2**n)
-print(dim)
+dim = 2**n
 print(z(i,j,dim))
