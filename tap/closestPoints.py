@@ -6,6 +6,17 @@ for point in points:
     plt.scatter(point[0],point[1])
 #plt.show()
 
+def binary_searchX(a, x, lo=0, hi=None):
+    if hi is None:
+        hi = len(a)
+    while lo < hi:
+        mid = (lo+hi)//2
+        if a[mid][0] < x:
+            lo = mid+1
+        else:
+            hi = mid
+    return lo
+
 def plotWithLineOn(x):
     plt.clf()
     for i in range(0,100):
@@ -20,7 +31,6 @@ def distance(a, b):
     return math.sqrt((a[0]-b[0])*(a[0]-b[0]) + (a[1]-b[1])*(a[1]-b[1]))
 
 def bruteForce(points):
-
     if len(points) < 2:
         return -1, (0,0)
     minDist = distance(points[0],points[1])
@@ -37,7 +47,9 @@ def bruteForce(points):
 def stripClose(points, line, mindist):
     minstrip = mindist
     minPoints = ()
-    for i in range(len(points)):
+    firsti = binary_searchX(points,line-mindist)
+
+    for i in range(firsti,len(points)):
         if points[i][0] > line-mindist:
             #print(points[i])
             for j in range(i, len(points)):
@@ -46,7 +58,6 @@ def stripClose(points, line, mindist):
                     if distance(points[i], points[j]) < minstrip:
                         minstrip = distance(points[i], points[j])
                         minPoints = (points[i], points[j])
-
 
         if points[i][0] > line+mindist:
             break
@@ -74,6 +85,7 @@ def divimp(v):
         lowDist = lowLeft
     elif lowLeft == -1:
         lowDist = lowRight
+
     stripDist, stripPoints = stripClose(points, middle, lowDist)
     lowDist = min(lowDist, stripDist)
     minPoints = (0,0)
