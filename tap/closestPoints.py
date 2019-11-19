@@ -17,6 +17,24 @@ def binary_searchX(a, x, lo=0, hi=None):
             hi = mid
     return lo
 
+def merge(l1, l2):
+    sorted_list = []
+
+    l1 = l1[:]
+    l2 = l2[:]
+
+    while (l1 and l2):
+        if (l1[0][1] <= l2[0][1]):
+            item = l1.pop(0)
+            sorted_list.append(item)
+        else:
+            item = l2.pop(0)
+            sorted_list.append(item)
+
+    sorted_list.extend(l1 if l1 else l2)
+
+    return sorted_list
+
 def plotWithLineOn(x):
     plt.clf()
     for i in range(0,100):
@@ -44,41 +62,35 @@ def bruteForce(points):
     return minDist, minPoints
     #print(minPoints)
 
-def stripClose(points, line, mindist):
-    minstrip = mindist
+
+def stripClose(strip,d):
+    size = len(strip)
+    minstrip=d
     minPoints = ()
-    firsti = binary_searchX(points,line-mindist)
-
-    for i in range(firsti,len(points)):
-        if points[i][0] > line-mindist:
-            #print(points[i])
-            for j in range(i, len(points)):
-                #print(points[j])
-                if points[j][0] > line and points[j][1] > points[i][1] and points[j][0] < line+mindist:
-                    if distance(points[i], points[j]) < minstrip:
-                        minstrip = distance(points[i], points[j])
-                        minPoints = (points[i], points[j])
-
-        if points[i][0] > line+mindist:
-            break
+    for i in range(0,size):
+        j=i+1
+        while(j<size  and (strip[j][1]-strip[i][1])<minstrip):
+            if distance(points[i], points[j]) < minstrip:
+                minstrip = distance(points[i], points[j])
+                minPoints = (points[i], points[j])
+            j+=1
     return minstrip, minPoints
 
 def divimp(v):
     if len(v) <= 3:
         minDist, minPoints = bruteForce(v)
-        return minDist, minPoints
+
+        return minDist, minPoints, sorted(v,key=lambda x:x[1])
     left = v[0][0]
     right = v[len(v) - 1][0]
 
     middle = (left+right)/2
     #plotWithLineOn(middle)
-    ind = 0
-    for ind in range(len(v)):
-        if v[ind][0] >= middle:
-            break
+    ind = int(len(v)/2)
+    lowRight, minPointsRight, yRight = divimp(v[ind:])
+    lowLeft, minPointsLeft, yLeft = divimp(v[:ind])
 
-    lowRight, minPointsRight = divimp(v[ind:])
-    lowLeft, minPointsLeft = divimp(v[:ind])
+    Y = merge(yRight, yLeft)
 
     lowDist = min(lowRight, lowLeft)
     if lowRight == -1:
@@ -86,7 +98,11 @@ def divimp(v):
     elif lowLeft == -1:
         lowDist = lowRight
 
-    stripDist, stripPoints = stripClose(points, middle, lowDist)
+    lilY = []
+    for el in Y:
+        if el[0] > middle-lowDist:
+            lilY.append(el)
+    stripDist, stripPoints = stripClose(lilY, lowDist)
     lowDist = min(lowDist, stripDist)
     minPoints = (0,0)
     if lowDist == lowRight:
@@ -95,7 +111,7 @@ def divimp(v):
         minPoints = minPointsLeft
     elif lowDist == stripDist:
         minPoints = stripPoints
-    return lowDist, minPoints
+    return lowDist, minPoints, Y
 
 points.append((46, 3))
 points.append((52, 10))
@@ -107,4 +123,4 @@ d = 5
 
 #plotWithLineOn(50)
 
-print(divimp(points))
+print(divimp(points)[0],divimp(points)[1] )
