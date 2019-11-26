@@ -17,6 +17,10 @@ for i in range(0, n):
 
 for i in range(0,n):
     T[i][i+1] = max(T[i][i],T[i+1][i+1])
+    if T[i][i+1] == T[i][i]:
+        T[i+1][i] = i
+    else:
+        T[i+1][i] = i+1
 
 
 for gap in range(2,n):
@@ -38,6 +42,16 @@ i = 0
 j = 5
 pct_calc = 0
 while(1):
+    print(V[i:j + 1])
+    if T[j][i] == i:
+        a = V[i]
+        i += 1
+    else:
+        a = V[j]
+        j -= 1
+    pct_calc += V[i]
+    print('calculatorul a ales ' + str(a))
+
     print(V[i:j+1])
     el = input()
     a = 0
@@ -48,12 +62,3 @@ while(1):
         a = V[j]
         j -= 1
     print('ai ales' + str(a))
-    print(V[i:j+1])
-    if T[j][i] == V[i]:
-        a = V[i]
-        i += 1
-    else:
-        a = V[j]
-        j -= 1
-    pct_calc += V[i]
-    print('calculatorul a ales' + str(a))
