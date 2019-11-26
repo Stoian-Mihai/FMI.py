@@ -25,6 +25,10 @@ for gap in range(2,n):
         T[i][j] = max(V[i]+min(T[i+1][j-1],T[i+2][j]),
                       V[j]+min(T[i+1][j-1],T[i][j-2]))
 
+        if T[i][j] == V[i]+min(T[i+1][j-1],T[i+2][j]):
+            T[j][i] = i
+        else:
+            T[j][i] = j
 
 for i in range(0,n):
     print(T[i][:-1])
@@ -37,7 +41,7 @@ while(1):
     print(V[i:j+1])
     el = input()
     a = 0
-    if int(el) == 0:
+    if int(el) == V[i]:
         a = V[i]
         i += 1
     else:
@@ -45,15 +49,11 @@ while(1):
         j -= 1
     print('ai ales' + str(a))
     print(V[i:j+1])
-    print(T[i][j])
-    #print(V[i])
-    #print(pct_calc)
-    if T[i][j] == V[i] + pct_calc:
+    if T[j][i] == V[i]:
         a = V[i]
         i += 1
     else:
         a = V[j]
         j -= 1
     pct_calc += V[i]
-
     print('calculatorul a ales' + str(a))
