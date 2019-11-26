@@ -40,6 +40,7 @@ print(sub)
 for i in range(len(sub)):
     sub[i].reverse()
 result = []
+heapq.heapify(sub)
 for i in range(len(v)):
     small_pile = sub[0]
     result.append(small_pile.pop(0))
