@@ -36,7 +36,6 @@ if cross(A2,A3,A4) == cross(A3,A4,A1) == cross(A4,A1,A2) == cross(A1,A2,A3):
 else:
     print("nu este convex")
 
-# In[44]:
 
 cosA2 = cos(A2,A1,A3)
 cosA4 = cos(A4,A1,A3)
