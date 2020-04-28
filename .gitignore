@@ -2,3 +2,8 @@
 .DS_Store
 .DS_Store
 .DS_Store
+.DS_Store
+AI/checkers/.idea/
+AI/checkers/venv/*
+.DS_Store
+AI/HaresAndHounds/.idea/*
